@@ -1,10 +1,11 @@
-import requests
 from dotenv import load_dotenv
 import os
 from django.core.cache import cache
-from utilities import api_handlers
-load_dotenv()
 
+# Custom Imports
+from utilities import api_handlers
+
+load_dotenv()
 class AuthHandler:
     def __init__(self) -> None:
         self.api_key = os.environ.get('AMADEUS_API_KEY', '')
