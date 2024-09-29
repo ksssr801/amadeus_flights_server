@@ -46,4 +46,18 @@ def flights_search(request):
         }    
     )
     
-    return Response({'data': response})
+    flights_detail_list = response.get('data', [])
+    required_flight_details = []
+    if len(flights_detail_list):
+        for obj in flights_detail_list:
+            required_flight_details.append({
+                'origin': origin_code,
+                'destination': destination_code,
+                'departure_date': departure_date,
+                'availableSeats': obj.get('numberOfBookableSeats', None),
+                'price': obj.get('price', {}).get('grandTotal', ''),
+                'currency': obj.get('price', {}).get('currency', ''),
+            })
+        
+    
+    return Response({'data': required_flight_details})
