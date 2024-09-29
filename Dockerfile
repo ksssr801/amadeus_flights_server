@@ -25,7 +25,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Expose the port on which the WSGI server will run
-EXPOSE 8000
+EXPOSE 8005
 
 # Run the WSGI server command when the container starts
-CMD gunicorn cache_service.wsgi:application --bind 0.0.0.0:8003
+CMD gunicorn amadeus_root.wsgi:application --bind 0.0.0.0:8005
