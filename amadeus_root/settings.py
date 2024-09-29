@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-k#jw+=bvzsoky*d-d!_5l(0%sbs#_+n@i3$5z2cx6*p%85$u)n'
+SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -122,14 +126,17 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+CACHE_TIMEOUT = int(os.environ.get('CACHE_TIMEOUT', ''))
 
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://localhost:6379/0',
-        'TIMEOUT': 600, # Cache timeout in 10 mins
+        'LOCATION': os.environ.get('REDIS_URL', ''),
+        'TIMEOUT': CACHE_TIMEOUT, # Cache timeout in 10 mins
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
     }
 }
+
+AMADEUS_API_BASE_URL = os.environ.get('AMADEUS_API_BASE_URL', '')

@@ -1,41 +1,45 @@
 import requests
 from django.core.cache import cache
+from django.conf import settings
 
-cache_timeout = 60 * 10
-base_url = 'https://test.api.amadeus.com/v2/'
+CACHE_TIMEOUT = settings.CACHE_TIMEOUT
+BASE_URL = settings.AMADEUS_API_BASE_URL
 
 class APIHandler:
-    def __init__(self, api_token, cache_key):
-        self.api_token = api_token
-        self.cache_key = cache_key
-        self.headers = {
-            'Authorization': f'Bearer {self.api_token}'
-        }
-    
-    def get_handler(self, end_point, params={}):
-        cached_response = cache.get(self.cache_key)
-        if cached_response:
-            return cached_response
+    def get_handler(self, end_point, params={}, headers=None, cache_config={}):
+        cache_key = cache_config.get('cache_key', '')
+        nocache = cache_config.get('nocache', 0)
+        if cache_key and not int(nocache):
+            cached_response = cache.get(cache_key)
+            if cached_response:
+                return cached_response
         try:
-            url = f'{base_url}{end_point}'
-            response = requests.get(url, params=params, timeout=10)
+            url = f'{BASE_URL}{end_point}'
+            response = requests.get(url, params=params, headers=headers, timeout=10)
             data = response.json()
-            cache.set(self.cache_key, data, cache_timeout)
+            if cache_key and not data.get('status'):
+                cache.set(cache_key, data, cache_config.get('timeout', CACHE_TIMEOUT))
             return data
 
         except Exception as e:
+            print (e)
             return None        
     
-    def post_handler(self, end_point, payload={}):
-        cached_response = cache.get(self.cache_key)
-        if cached_response:
-            return cached_response
+    def post_handler(self, end_point, payload={}, headers=None, cache_config={}):
+        cache_key = cache_config.get('cache_key', '')
+        nocache = cache_config.get('nocache', 0)
+        if cache_key and not int(nocache):
+            cached_response = cache.get(cache_key)
+            if cached_response:
+                return cached_response
         try:
-            url = f'{base_url}{end_point}'
-            response = requests.get(url, data=payload, timeout=10)
+            url = f'{BASE_URL}{end_point}'
+            response = requests.post(url, data=payload, headers=headers, timeout=10)
             data = response.json()
-            cache.set(self.cache_key, data, cache_timeout)
+            if cache_key:
+                cache.set(cache_key, data, cache_config.get('timeout', CACHE_TIMEOUT))
             return data
 
         except Exception as e:
+            print (e)
             return None        
