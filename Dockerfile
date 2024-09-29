@@ -27,9 +27,5 @@ ENV PYTHONUNBUFFERED 1
 # Expose the port on which the WSGI server will run
 EXPOSE 8000
 
-# Run migrations
-RUN python manage.py makemigrations
-RUN python manage.py migrate
-
 # Run the WSGI server command when the container starts
 CMD gunicorn cache_service.wsgi:application --bind 0.0.0.0:8003
