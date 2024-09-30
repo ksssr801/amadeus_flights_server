@@ -6,6 +6,7 @@ Implemented using local caching with Redis and also manages the Amadeus API acce
 ## Prerequisites
 
 - Docker server should be running
+- Create a .env file inside folder ```amadeus_flights_server```. All the token related configs will be inside this file.
 
 ## Installation Instructions
 
